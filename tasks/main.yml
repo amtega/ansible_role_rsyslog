@@ -1,2 +1,6 @@
 ---
 # Role tasks
+- block:
+    - import_tasks: configure.yml
+  tags:
+    - role::rsyslog
