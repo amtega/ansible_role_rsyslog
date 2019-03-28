@@ -1,3 +1,5 @@
 ---
 # Role variables
 rsyslog_config_dir: /etc/rsyslog.d
+rsyslog_config_file: /etc/rsyslog.conf
+rsyslog_sysconfig_file: /etc/sysconfig/rsyslog
