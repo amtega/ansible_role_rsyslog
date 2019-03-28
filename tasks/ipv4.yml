@@ -1,0 +1,10 @@
+- block:
+    - name: Force rsyslogd to listen ipv4 addresses only
+      lineinfile:
+        path: /etc/selinux/config
+        regexp: '^SYSLOGD_OPTIONS='
+        line: 'SYSLOGD_OPTIONS=\"-4\"'
+      notify: rsyslog service restart
+  tags:
+    - role::rsyslog
+    - role::rsyslog::ipv4
