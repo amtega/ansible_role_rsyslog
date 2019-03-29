@@ -13,4 +13,4 @@ module(load="{{ module.module_name }}")
 action({{ action.action_params | default([]) | join(" ") }})
 {% endif %}
 {% endfor %}
-{{% endif %}}
+{% endif %}

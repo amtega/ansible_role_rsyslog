@@ -28,6 +28,15 @@ dependencies:
   - role: amtega.packages
     packages_os:
       centos:
+        6:
+          rsyslog: absent
+      rhel:
+        6:
+          rsyslog: absent
+
+  - role: amtega.packages
+    packages_os:
+      centos:
         6: "{{ rsyslog_packages_centos6 }}"
         7: "{{ rsyslog_packages_centos7 }}"
       fedora:

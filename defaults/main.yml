@@ -2,7 +2,6 @@
 # Role default lower priority variables
 # Packages to install
 rsyslog_packages_centos6:
-  rsyslog: absent
   rsyslog7: present
   rsyslog7-relp: present
 
@@ -15,7 +14,6 @@ rsyslog_packages_fedora_all:
   rsyslog-relp: present
 
 rsyslog_packages_el6:
-  rsyslog: absent
   rsyslog7: present
   rsyslog7-relp: present
 
@@ -27,27 +25,27 @@ rsyslog_packages_el7:
 rsyslog_remote_server: central-log-serv.example.com
 
 # A list of dicts whith modules to configure
-rsyslog_modules: []
+rsyslog_modules:
+  - filename: auth.conf
+    module_name: omrelp
+    actions:
+      - facility: authpriv.*,auth.*
+        action_params:
+          - type="omrelp"
+          - target="{{ rsyslog_remote_server }}"
+          - port="2514"
 
 #Every module is a list os dicts with tis elements:
 # List of dicts with the open services
 #
 # {
 #   filename: <name of the file wich contains module configuration>
-#   module: <module name>
+#   module_name: <module name>
 #   config_params: <list of strings with params to add in module load (optional)>
 #   actions: <list of dict with actions defined for the module (optional)>
 #     {
-#       facility: <string with faclilities to apply the action>
+#       facility: <string with faclilities to apply the action (optional)>
 #       action_params: <list of strings with params to add to the action>
-#      }: <>
+#      }
 # }
-rsyslog_module_omrelp:
-  filename: auth.conf
-  module: omrelp
-  actions:
-    - facility: authpriv.*,auth.*
-      action_params:
-        - type="omrelp"
-        - target=\""{{ rsyslog_remote_server }}"\"
-        - port="2514"
+rsyslog_load_modules_from_hostvars: no

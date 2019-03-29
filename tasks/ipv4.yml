@@ -3,7 +3,7 @@
       lineinfile:
         path: "{{ rsyslog_sysconfig_file }}"
         regexp: '^SYSLOGD_OPTIONS='
-        line: 'SYSLOGD_OPTIONS=\"-4\"'
+        line: 'SYSLOGD_OPTIONS="-4"'
       notify: rsyslog service restart
   tags:
     - role::rsyslog

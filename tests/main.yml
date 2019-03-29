@@ -24,8 +24,8 @@
     - name: check rsyslog configuration
       command: rsyslogd -N 1 -f "{{ rsyslog_config_file }}"
       register: rsyslog_check
-      changed_when: '"End of config validation run" not in rsyslog_check'
-
+      changed_when: no
+      failed_when: not rsyslog_check.stderr is search("End of config validation run")
   tags:
     - idempotence
 
