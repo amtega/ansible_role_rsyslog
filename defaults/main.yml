@@ -21,9 +21,9 @@ rsyslog_packages_el7:
   rsyslog: present
   rsyslog-relp: present
 
-#Indicates remote server fot omrelp module config
-rsyslog_remote_server: central-log-serv.example.com
-
+#Indicates remote server and port for omrelp module config
+rsyslog_relp_remote_server: central-log-serv.example.com
+rsyslog_relp_remote_port: 2514
 # A list of dicts whith modules to configure
 rsyslog_modules:
   - filename: auth.conf
@@ -32,8 +32,8 @@ rsyslog_modules:
       - facility: authpriv.*,auth.*
         action_params:
           - type="omrelp"
-          - target="{{ rsyslog_remote_server }}"
-          - port="2514"
+          - target="{{ rsyslog_relp_remote_server }}"
+          - port="{{ rsyslog_relp_remote_port }}"
 
 #Every module is a list os dicts with tis elements:
 # List of dicts with the open services
