@@ -1,2 +1,8 @@
 ---
 # Role handlers
+- name: rsyslog service restart
+  service:
+    name: rsyslog
+    state: restarted
+    enabled: yes
+  listen: rsyslog service restart
