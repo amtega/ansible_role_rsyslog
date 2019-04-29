@@ -1,5 +1,30 @@
 ---
 # Role variables
+
+# Required packages
+
+rsyslog_packages_os:
+  centos:
+    6:
+      rsyslog7: present
+      rsyslog7-relp: present
+    7:
+      rsyslog: present
+      rsyslog-relp: present
+  fedora:
+    all:
+      rsyslog: present
+      rsyslog-relp: present
+  rhel:
+    6:
+      rsyslog7: present
+      rsyslog7-relp: present
+    7:
+      rsyslog: present
+      rsyslog-relp: present
+
+# Paths
+
 rsyslog_config_dir: /etc/rsyslog.d
 rsyslog_config_file: /etc/rsyslog.conf
 rsyslog_sysconfig_file: /etc/sysconfig/rsyslog

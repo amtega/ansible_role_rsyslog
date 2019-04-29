@@ -1,0 +1,17 @@
+{{ ansible_managed | comment }}
+
+{% if rsyslog_module.params is defined %}
+module(load="{{ rsyslog_module.name }}" {{ rsyslog_module.params | join(" ") }})
+{% else %}
+module(load="{{ rsyslog_module.name }}")
+{% endif %}
+
+{% if rsyslog_module.actions is defined %}
+{% for action in rsyslog_module.actions %}
+{% if action.facilites is defined %}
+{{ action.facilites | join(",") }} action({{ action.params | default([]) | join(" ") }})
+{% else %}
+action({{ action.params | default([]) | join(" ") }})
+{% endif %}
+{% endfor %}
+{% endif %}

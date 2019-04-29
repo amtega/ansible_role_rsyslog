@@ -1,6 +1,7 @@
 ---
 # Tasks for testing role
-- name: run idempotence test
+
+- name: Run idempotence test
   hosts: localhost
   roles:
     - role: amtega.docker_presets
@@ -8,28 +9,29 @@
         [? starts_with(name, `centos-6`)
            || starts_with(name, `centos-7`)
            || starts_with(name, `fedora-27`)
-           || starts_with(name, `fedora-28`) ]
+           || starts_with(name, `fedora-28`)
+           || starts_with(name, `fedora-29`) ]
 
     - role: amtega.docker_sandbox
       docker_sandbox_state: started
   tags:
     - sandbox
 
-- name: test su role with defaults
+- name: Test rsyslog role with defaults
   hosts: docker_sandbox_containers
-  vars:
   roles:
     - amtega.rsyslog
   tasks:
-    - name: check rsyslog configuration
+    - name: Check rsyslog configuration
       command: rsyslogd -N 1 -f "{{ rsyslog_config_file }}"
       register: rsyslog_check
       changed_when: no
-      failed_when: not rsyslog_check.stderr is search("End of config validation run")
+      failed_when: >-
+        not rsyslog_check.stderr is search("End of config validation run")
   tags:
     - idempotence
 
-- name: cleanup docker docker sandbox
+- name: Cleanup docker docker sandbox
   hosts: localhost
   roles:
     - role: amtega.docker_sandbox

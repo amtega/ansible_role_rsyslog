@@ -1,7 +1,30 @@
 ---
 # Role tasks
+
 - block:
-    - import_tasks: configure.yml
-    - import_tasks: ipv4.yml
+    - name: Setup config files for rsyslog output modules
+      template:
+        src: module.j2
+        dest: "{{ rsyslog_config_dir }}/{{ rsyslog_module.filename }}"
+      loop: "{{ rsyslog_modules_to_manage }}"
+      loop_control:
+        loop_var: rsyslog_module
+      notify: rsyslog service restart
+      vars:
+        rsyslog_modules_to_manage: >-
+          {{ rsyslog_modules
+             + ((rsyslog_load_from_hostvars)
+                | ternary(rsyslog_modules_hostvars
+                          | default([])
+                          | flatten,
+                          [])) }}
+
+    - name: Setup rsyslog options
+      lineinfile:
+        path: "{{ rsyslog_sysconfig_file }}"
+        regexp: '^SYSLOGD_OPTIONS='
+        line: 'SYSLOGD_OPTIONS="{{ rsyslog_options }}"'
+      notify: rsyslog service restart
   tags:
     - role::rsyslog
+    - role::rsyslog::configure
