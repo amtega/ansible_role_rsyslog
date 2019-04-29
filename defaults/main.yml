@@ -1,51 +1,41 @@
 ---
 # Role default lower priority variables
-# Packages to install
-rsyslog_packages_centos6:
-  rsyslog7: present
-  rsyslog7-relp: present
 
-rsyslog_packages_centos7:
-  rsyslog: present
-  rsyslog-relp: present
+# Rsyslog daemon options
 
-rsyslog_packages_fedora_all:
-  rsyslog: present
-  rsyslog-relp: present
+rsyslog_options:
 
-rsyslog_packages_el6:
-  rsyslog7: present
-  rsyslog7-relp: present
-
-rsyslog_packages_el7:
-  rsyslog: present
-  rsyslog-relp: present
-
-#Indicates remote server and port for omrelp module config
-rsyslog_relp_remote_server: central-log-serv.example.com
-rsyslog_relp_remote_port: 2514
-# A list of dicts whith modules to configure
-rsyslog_modules:
-  - filename: auth.conf
-    module_name: omrelp
-    actions:
-      - facility: authpriv.*,auth.*
-        action_params:
-          - type="omrelp"
-          - target="{{ rsyslog_relp_remote_server }}"
-          - port="{{ rsyslog_relp_remote_port }}"
-
-#Every module is a list os dicts with tis elements:
-# List of dicts with the open services
+# List of dicts whith modules to configure. Each dictionary must follow this
+# format:
 #
 # {
-#   filename: <name of the file wich contains module configuration>
-#   module_name: <module name>
-#   config_params: <list of strings with params to add in module load (optional)>
-#   actions: <list of dict with actions defined for the module (optional)>
-#     {
-#       facility: <string with faclilities to apply the action (optional)>
-#       action_params: <list of strings with params to add to the action>
-#      }
+#   filename: <config_file>
+#   name: <module_name>
+#   params: <params>         # List of strings with load parameters (optional)
+#   actions:                 # List of dicts with actions defined  (optional)>
+#     facilites: <facilites> # List of strings with faclilities (optional)
+#     params: <params>       #List of strings with params to add to the action
 # }
-rsyslog_load_modules_from_hostvars: no
+#
+# Example:
+#
+# rsyslog_modules:
+#   - filename: auth.conf
+#     name: omrelp
+#     actions:
+#       - facilites:
+#           - authpriv.*
+#           - auth.*
+#         params:
+#           - type="omrelp"
+#           - target="central-log-serv.example.com"
+#           - port="2514"
+
+rsyslog_modules: []
+
+# Indicate `rsyslog_modules` must be loaded also from host variables. Any host
+# variable that begins with "rsyslog_modules_*" and contains the necessary
+# attributes will be loaded as an item to manage by the role. The variables must
+# follow the structure detailed before for `rsyslog_modules`
+
+rsyslog_load_from_hostvars: no
