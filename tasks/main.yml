@@ -1,6 +1,38 @@
 ---
 # Role tasks
 
+- include_role:
+    name: amtega.check_platform
+  vars:
+    check_platform_distributions:
+      centos: 6
+      fedora: 27
+      rhel: 6
+
+- include_role:
+    name: amtega.packages
+  vars:
+    packages_os:
+      centos:
+        6:
+          rsyslog: absent
+      rhel:
+        6:
+          rsyslog: absent
+
+- include_role:
+    name: amtega.packages
+  vars:
+    packages_os: "{{ rsyslog_packages_os }}"
+
+- include_role:
+    name: amtega.select_hostvars
+  vars:
+    select_hostvars_query:
+      pattern: "^rsyslog_modules_.*"
+      fact_name: rsyslog_modules_hostvars
+      output_type: list
+
 - block:
     - name: Setup config files for rsyslog output modules
       template:
@@ -9,6 +41,7 @@
       loop: "{{ rsyslog_modules_to_manage }}"
       loop_control:
         loop_var: rsyslog_module
+        labe: "{{ rsyslog_config_dir }}/{{ rsyslog_module.filename }}"
       notify: rsyslog service restart
       vars:
         rsyslog_modules_to_manage: >-
