@@ -7,7 +7,7 @@ galaxy_info:
   description: Install and configure modules for rsyslog
   company: AMTEGA - Xunta de Galicia
   license: GPLv3 or EUPL
-  min_ansible_version: 2.7
+  min_ansible_version: 2.8
   platforms:
     - name: EL
       versions:
@@ -15,47 +15,25 @@ galaxy_info:
         - 7
     - name: Fedora
       versions:
-        - 27
-        - 28
         - 29
+        - 30
   galaxy_tags:
     - rsyslog
     - log
 
 dependencies:
   - role: amtega.check_platform
-    vars:
-      check_platform_distributions:
-        centos: 6
-        fedora: 27
-        rhel: 6
     tags:
-      - role::rsyslog
+      - never
 
   - role: amtega.packages
-    packages_os:
-      centos:
-        6:
-          rsyslog: absent
-      rhel:
-        6:
-          rsyslog: absent
     tags:
-      - role::rsyslog
-      - role::rsyslog::install
+      - never
 
   - role: amtega.packages
-    packages_os: "{{ rsyslog_packages_os }}"
     tags:
-      - role::rsyslog
-      - role::rsyslog::install
+      - never
 
   - role: amtega.select_hostvars
-    vars:
-      select_hostvars_query:
-        pattern: "^rsyslog_modules_.*"
-        fact_name: rsyslog_modules_hostvars
-        output_type: list
     tags:
-      - role::rsyslog
-      - role::rsyslog::configure
+      - never
