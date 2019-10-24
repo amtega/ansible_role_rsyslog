@@ -41,7 +41,7 @@
       loop: "{{ rsyslog_modules_to_manage }}"
       loop_control:
         loop_var: rsyslog_module
-        labe: "{{ rsyslog_config_dir }}/{{ rsyslog_module.filename }}"
+        label: "{{ rsyslog_config_dir }}/{{ rsyslog_module.filename }}"
       notify: rsyslog service restart
       vars:
         rsyslog_modules_to_manage: >-
