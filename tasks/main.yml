@@ -26,6 +26,32 @@
         regexp: '^SYSLOGD_OPTIONS='
         line: 'SYSLOGD_OPTIONS="{{ rsyslog_options }}"'
       notify: rsyslog service restart
+
+    - name: Adjust default log file creation permissions
+      lineinfile:
+        path: "{{ rsyslog_config_file }}"
+        insertafter: '^#### GLOBAL DIRECTIVES'
+        regexp: '^\$FileCreateMode'
+        line: "$FileCreateMode {{ rsyslog_log_file_mode }}"
+      notify: rsyslog service restart
+
+
+    - name: Retrieve all conf files from rsyslog.d
+      find:
+        paths: "{{ rsyslog_config_dir }}/"
+        patterns: "*.conf"
+      register: rsyslog_read_conf_dir
+
+    - name: Ensure extra conf files not overwrite file creation permissions directive
+      lineinfile:
+        path: "{{ config_extra_file }}"
+        regexp: '^\$FileCreateMode'
+        state: absent
+      loop: "{{ rsyslog_read_conf_dir.files | map(attribute='path') | list | default([]) }}"
+      loop_control:
+        loop_var: config_extra_file
+      notify: rsyslog service restart
+
   tags:
     - role::rsyslog
     - role::rsyslog::configure
