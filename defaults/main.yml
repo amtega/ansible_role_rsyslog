@@ -40,5 +40,6 @@ rsyslog_modules: []
 
 rsyslog_load_from_hostvars: no
 
-# Indicate file permissions for new log files created by rsyslog
+# File permissions for new log files created by rsyslog
+
 rsyslog_log_file_mode: '0640'
