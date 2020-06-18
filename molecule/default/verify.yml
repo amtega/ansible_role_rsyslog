@@ -1,13 +1,11 @@
 ---
 
-- name: Converge
+- name: Verify
   hosts: molecule_hosts
   gather_facts: no
-  roles:
-    - amtega.rsyslog
   tasks:
     - name: Check rsyslog configuration
-      command: rsyslogd -N 1 -f "{{ rsyslog_config_file }}"
+      command: rsyslogd -N 1 -f /etc/rsyslog.conf
       register: rsyslog_check
       changed_when: no
       failed_when: >-
