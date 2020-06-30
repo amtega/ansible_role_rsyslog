@@ -15,7 +15,7 @@ rsyslog_packages_os:
     all:
       rsyslog: present
       rsyslog-relp: present
-  rhel:
+  redhat:
     6:
       rsyslog7: present
       rsyslog7-relp: present
