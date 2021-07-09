@@ -8,6 +8,7 @@
       file:
         path: /etc/rsyslog.d
         state: directory
+        mode: 0755
 
     - name: Setup extra config file to test log file creation permissions
       copy:
@@ -15,3 +16,4 @@
         force: no
         content: |
           $FileCreateMode 0655
+        mode: 0644
