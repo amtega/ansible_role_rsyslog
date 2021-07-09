@@ -6,6 +6,7 @@
       template:
         src: module.j2
         dest: "{{ rsyslog_config_dir }}/{{ rsyslog_module.filename }}"
+        mode: 0644
       loop: "{{ rsyslog_modules_to_manage }}"
       loop_control:
         loop_var: rsyslog_module

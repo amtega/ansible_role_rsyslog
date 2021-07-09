@@ -11,6 +11,9 @@ rsyslog_packages_os:
     7:
       rsyslog: present
       rsyslog-relp: present
+    8:
+      rsyslog: present
+      rsyslog-relp: present
   fedora:
     all:
       rsyslog: present
@@ -20,6 +23,9 @@ rsyslog_packages_os:
       rsyslog7: present
       rsyslog7-relp: present
     7:
+      rsyslog: present
+      rsyslog-relp: present
+    8:
       rsyslog: present
       rsyslog-relp: present
 
