@@ -21,6 +21,30 @@
                           | flatten,
                           [])) }}
 
+    - name: Setup raw config files
+      template:
+        src: raw_config.j2
+        dest: "{{ rsyslog_config_dir }}/{{ rsyslog_raw_config.file }}"
+        mode: 0644
+      loop: >-
+        {{ rsyslog_raw_configs 
+           | dict2items(key_name='file', value_name='content') }}
+      loop_control:
+        loop_var: rsyslog_raw_config
+        label: "{{ rsyslog_config_dir }}/{{ rsyslog_raw_config.file }}"
+      when: 
+        - rsyslog_raw_config.file is defined
+      notify: rsyslog service restart
+        dest: "{{ rsyslog_config_dir }}/{{ rsyslog_raw_config }}"
+      vars:
+        rsyslog_raw_configs: >-
+          {{ rsyslog_raw_configs
+             + ((rsyslog_load_from_hostvars)
+                | ternary(rsyslog_raw_configs_hostvars
+                          | default([])
+                          | flatten,
+                          [])) }}
+
     - name: Setup rsyslog options
       lineinfile:
         path: "{{ rsyslog_sysconfig_file }}"
