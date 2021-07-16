@@ -33,6 +33,46 @@ rsyslog_options:
 
 rsyslog_modules: []
 
+# Dictionary with file names as keys and raw content as values. 
+#
+# {
+#   <app_1.conf>: 
+#     <filename1>: |
+#       <content>
+#   <app_2.conf>
+#     <filename2>: |
+#       <content>
+# }
+#
+# Example:
+#
+# rsyslog_raw_configs:
+#   app1.conf: |
+#     if $fromhost-ip == [ "1.1.1.1", "2.2.2.2" ] then {
+#       action ( 
+#         type="omfwd" 
+#         queue.type="linkedlist" 
+#         queue.discardmark="980" 
+#         action.resumeretrycount="-1" 
+#         name="NET.forward" target="10.10.10.10" 
+#         port="514" protocol="tcp"
+#       )
+#       action (
+#         type="omfile" 
+#         queue.type="linkedlist" 
+#         queue.discardmark="980" 
+#         name="NET.local" 
+#        file="/var/log/messages"
+#       )
+#       stop
+#     }
+#   app2.conf: |
+#     [...]
+#
+#
+
+rsyslog_raw_configs: {}
+
 # Indicate `rsyslog_modules` must be loaded also from host variables. Any host
 # variable that begins with "rsyslog_modules_*" and contains the necessary
 # attributes will be loaded as an item to manage by the role. The variables must
