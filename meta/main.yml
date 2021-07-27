@@ -4,7 +4,7 @@
 galaxy_info:
   role_name: rsyslog
   namespace: amtega
-  author: José Enrique Mourón Regueira
+  author: José Enrique Mourón Regueira / José Manuel Fandiño Pita
   description: Install and configure modules for rsyslog
   company: AMTEGA - Xunta de Galicia
   license: GPLv3 or EUPL
