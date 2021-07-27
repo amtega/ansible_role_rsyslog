@@ -21,6 +21,52 @@
                           | flatten,
                           [])) }}
 
+    - name: Setup raw config files
+      template:
+        src: raw_config.j2
+        dest: "{{ rsyslog_config_dir }}/{{ rsyslog_raw_config.file }}"
+        mode: 0644
+      loop: >-
+        {{ rsyslog_raw_configs_to_manage 
+           | dict2items(key_name='file', value_name='properties') }}
+      loop_control:
+        loop_var: rsyslog_raw_config
+        label: "{{ rsyslog_config_dir }}/{{ rsyslog_raw_config.file }}"
+      when: 
+        - rsyslog_raw_configs is defined 
+        - rsyslog_raw_config.file is defined
+        - rsyslog_raw_config.properties.state == 'present'
+      notify: rsyslog service restart
+      vars:
+        rsyslog_raw_configs_to_manage: >-
+          {{ rsyslog_raw_configs 
+             | combine((rsyslog_load_from_hostvars)
+               | ternary(rsyslog_raw_configs_from_hostvars 
+                         | default({}) 
+                         | flatten, {})) }}
+
+    - name: Remove disabled raw config files
+      file:
+        path: "{{ rsyslog_config_dir }}/{{ rsyslog_raw_config.file }}"
+        state: absent
+      loop: >-
+        {{ rsyslog_raw_configs_to_manage 
+           | dict2items(key_name='file', value_name='properties') }}
+      loop_control:
+        loop_var: rsyslog_raw_config
+        label: "{{ rsyslog_config_dir }}/{{ rsyslog_raw_config.file }}"
+      when: 
+        - rsyslog_raw_configs is defined 
+        - rsyslog_raw_config.file is defined
+        - rsyslog_raw_config.properties.state == 'absent'
+      vars:
+        rsyslog_raw_configs_to_manage: >-
+          {{ rsyslog_raw_configs 
+             | combine((rsyslog_load_from_hostvars)
+               | ternary(rsyslog_raw_configs_from_hostvars 
+                         | default({}) 
+                         | flatten, {})) }}
+
     - name: Setup rsyslog options
       lineinfile:
         path: "{{ rsyslog_sysconfig_file }}"
@@ -55,6 +101,29 @@
       loop_control:
         loop_var: config_extra_file
       notify: rsyslog service restart
+
+    - block:
+        - name: rsyslog pkg info
+          yum:
+            list: 'rsyslog'
+            update_cache: no
+          register: rsyslog_pkg_result
+   
+        - name: rsyslog major version
+          set_fact: 
+            rsyslog_major_version: >-
+              {{ rsyslog_pkg_result.results[0].version 
+                 | regex_replace('^([578])\..*','\1') }}
+          failed_when: 
+            - rsyslog_major_version | int not in [5,7,8]
+ 
+        - name: Check valid configuration
+          command: "{{ 'rsyslogd -N' ~ rsyslog_major_version }}"
+          changed_when: no
+          register: rsyslog_valid_configuration_result
+          failed_when: rsyslog_valid_configuration_result.rc != 0
+      when:
+        - ansible_facts.distribution | lower in ["centos", "redhat", "fedora"]
 
   tags:
     - role::rsyslog

@@ -29,7 +29,7 @@ rsyslog_packages_os:
       rsyslog: present
       rsyslog-relp: present
 
-# Paths
+# Paths and files
 
 rsyslog_config_dir: /etc/rsyslog.d
 rsyslog_config_file: /etc/rsyslog.conf
