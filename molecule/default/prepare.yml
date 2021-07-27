@@ -3,17 +3,3 @@
 - name: Prepare
   hosts: molecule_hosts
   gather_facts: no
-  tasks:
-    - name: Setup rsyslog.d directory
-      file:
-        path: /etc/rsyslog.d
-        state: directory
-        mode: 0755
-
-    - name: Setup extra config file to test log file creation permissions
-      copy:
-        dest: /etc/rsyslog.d/test.conf
-        force: no
-        content: |
-          $FileCreateMode 0655
-        mode: 0644
