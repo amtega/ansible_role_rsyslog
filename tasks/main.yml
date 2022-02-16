@@ -119,11 +119,12 @@
 
         - name: Check valid configuration
           command: "{{ '/usr/sbin/rsyslogd -N' ~ rsyslog_major_version }}"
-          changed_when: no
+          when: ansible_facts.distribution_major_version is search("7", ">=")
           register: rsyslog_valid_configuration_result
+          changed_when: no
           failed_when: rsyslog_valid_configuration_result.rc != 0
       when:
-        - ansible_facts.distribution | lower in ["centos", "redhat", "fedora"]
+        - ansible_facts.os_family | lower == "redhat"
 
   tags:
     - role::rsyslog
