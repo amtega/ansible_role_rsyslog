@@ -34,10 +34,7 @@ dependencies:
   - role: amtega.packages
     vars:
       packages_os:
-        centos:
-          6:
-            rsyslog: absent
-        redhat:
+        all:
           6:
             rsyslog: absent
 

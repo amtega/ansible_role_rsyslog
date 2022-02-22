@@ -4,7 +4,7 @@
 # Required packages
 
 rsyslog_packages_os:
-  centos:
+  all:
     6:
       rsyslog7: present
       rsyslog7-relp: present
@@ -16,16 +16,6 @@ rsyslog_packages_os:
       rsyslog-relp: present
   fedora:
     all:
-      rsyslog: present
-      rsyslog-relp: present
-  redhat:
-    6:
-      rsyslog7: present
-      rsyslog7-relp: present
-    7:
-      rsyslog: present
-      rsyslog-relp: present
-    8:
       rsyslog: present
       rsyslog-relp: present
 
