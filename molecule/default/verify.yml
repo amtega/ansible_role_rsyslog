@@ -5,7 +5,7 @@
   gather_facts: no
   tasks:
     - name: Check rsyslog configuration
-      command: rsyslogd -N 1 -f /etc/rsyslog.conf
+      ansible.builtin.command: rsyslogd -N 1 -f /etc/rsyslog.conf
       register: rsyslog_check
       changed_when: no
       failed_when: >-

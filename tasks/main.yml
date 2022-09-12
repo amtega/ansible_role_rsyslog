@@ -1,9 +1,9 @@
 ---
-# Role tasks
 
-- block:
+- name: Setup rsyslog
+  block:
     - name: Setup config files for rsyslog output modules
-      template:
+      ansible.builtin.template:
         src: module.j2
         dest: "{{ rsyslog_config_dir }}/{{ rsyslog_module.filename }}"
         mode: 0644
@@ -22,7 +22,7 @@
                           [])) }}
 
     - name: Setup raw config files
-      template:
+      ansible.builtin.template:
         src: raw_config.j2
         dest: "{{ rsyslog_config_dir }}/{{ rsyslog_raw_config.file }}"
         mode: 0644
@@ -46,7 +46,7 @@
                          | flatten, {})) }}
 
     - name: Remove disabled raw config files
-      file:
+      ansible.builtin.file:
         path: "{{ rsyslog_config_dir }}/{{ rsyslog_raw_config.file }}"
         state: absent
       loop: >-
@@ -68,14 +68,14 @@
                          | flatten, {})) }}
 
     - name: Setup rsyslog options
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: "{{ rsyslog_sysconfig_file }}"
         regexp: '^SYSLOGD_OPTIONS='
         line: 'SYSLOGD_OPTIONS="{{ rsyslog_options }}"'
       notify: rsyslog service restart
 
     - name: Setup default log file creation permissions
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: "{{ rsyslog_config_file }}"
         insertafter: '^#### GLOBAL DIRECTIVES'
         regexp: '^\$FileCreateMode'
@@ -83,13 +83,13 @@
       notify: rsyslog service restart
 
     - name: Search all rsyslog config files
-      find:
+      ansible.builtin.find:
         paths: "{{ rsyslog_config_dir }}/"
         patterns: "*.conf"
       register: rsyslog_find_conf_files_result
 
     - name: Setup extra config files log file creation permissions
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: "{{ config_extra_file }}"
         regexp: '^\$FileCreateMode'
         state: absent
@@ -102,15 +102,16 @@
         loop_var: config_extra_file
       notify: rsyslog service restart
 
-    - block:
-        - name: rsyslog pkg info
-          yum:
-            list: 'rsyslog'
+    - name: Manage redhat distros
+      block:
+        - name: Setup rsyslog package
+          ansible.builtin.yum:
+            list: rsyslog
             update_cache: no
           register: rsyslog_pkg_result
 
-        - name: rsyslog major version
-          set_fact:
+        - name: Setup fact with rsyslog major version
+          ansible.builtin.set_fact:
             rsyslog_major_version: >-
               {{ rsyslog_pkg_result.results[0].version
                  | regex_replace('^([578])\..*','\1') }}
@@ -118,7 +119,8 @@
             - rsyslog_major_version | int not in [5,7,8]
 
         - name: Check valid configuration
-          command: "{{ '/usr/sbin/rsyslogd -N' ~ rsyslog_major_version }}"
+          ansible.builtin.command: >-
+            {{ '/usr/sbin/rsyslogd -N' ~ rsyslog_major_version }}
           when: ansible_facts.distribution_major_version is search("7", ">=")
           register: rsyslog_valid_configuration_result
           changed_when: no
