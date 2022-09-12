@@ -2,7 +2,7 @@
 # Role handlers
 
 - name: Rsyslog service restart
-  service:
+  ansible.builtin.service:
     name: rsyslog
     state: restarted
     enabled: yes
